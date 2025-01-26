@@ -19,6 +19,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
     // Create player
     this.player = this.physics.add.sprite(400, 300, "dude");
+    this.player.setCollideWorldBounds(true);
 
     // Player animations
     this.anims.create({
