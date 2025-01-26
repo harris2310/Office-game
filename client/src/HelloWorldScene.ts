@@ -1,35 +1,94 @@
-import Phaser from 'phaser'
-
+import Phaser from "phaser";
+import tileImage from "../assets/tiles.png";
 export default class HelloWorldScene extends Phaser.Scene {
-	constructor() {
-		super('hello-world')
-	}
+  private player?: Phaser.Physics.Arcade.Sprite;
+  private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
 
-	preload() {
-		this.load.setBaseURL('https://labs.phaser.io')
+  constructor() {
+    super("hello-world");
+  }
 
-		this.load.image('sky', 'assets/skies/space3.png')
-		this.load.image('logo', 'assets/sprites/phaser3-logo.png')
-		this.load.image('red', 'assets/particles/red.png')
-	}
+  preload() {
+    this.load.image("grass", tileImage);
+    this.load.setBaseURL("https://labs.phaser.io");
 
-	create() {
-		this.add.image(400, 300, 'sky')
+    this.load.spritesheet("dude", "assets/sprites/dude.png", { frameWidth: 32, frameHeight: 48 });
+  }
 
-		const particles = this.add.particles('red')
+  create() {
+    this.add.image(400, 300, "sky");
 
-		const emitter = particles.createEmitter({
-			speed: 100,
-			scale: { start: 1, end: 0 },
-			blendMode: 'ADD',
-		})
+    // Create player
+    this.player = this.physics.add.sprite(400, 300, "dude");
+    this.player.setCollideWorldBounds(true);
 
-		const logo = this.physics.add.image(400, 100, 'logo')
+    // Player animations
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1,
+    });
 
-		logo.setVelocity(100, 200)
-		logo.setBounce(1, 1)
-		logo.setCollideWorldBounds(true)
+    this.anims.create({
+      key: "turn",
+      frames: [{ key: "dude", frame: 4 }],
+      frameRate: 20,
+    });
 
-		emitter.startFollow(logo)
-	}
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "up",
+      frames: [{ key: "dude", frame: 4 }],
+      frameRate: 20,
+    });
+
+    this.anims.create({
+      key: "down",
+      frames: [{ key: "dude", frame: 4 }],
+      frameRate: 20,
+    });
+
+    // Input
+    this.cursors = this.input.keyboard.createCursorKeys();
+
+    // Remove gravity
+    this.physics.world.gravity.y = 0;
+  }
+
+  update() {
+    if (!this.cursors || !this.player) {
+      return;
+    }
+
+    // Reset velocity each frame
+    this.player.setVelocity(0);
+
+    // Grid-like movement speed
+    const speed = 160;
+
+    // Handle movement in four directions
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-speed);
+      this.player.anims.play("left", true);
+    } else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(speed);
+      this.player.anims.play("right", true);
+    } else if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-speed);
+      this.player.anims.play("up", true);
+    } else if (this.cursors.down.isDown) {
+      this.player.setVelocityY(speed);
+      this.player.anims.play("down", true);
+    } else {
+      this.player.anims.play("turn");
+    }
+  }
 }
+
