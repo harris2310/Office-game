@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import tileImage from "../assets/tiles.png";
+import tileImage from "../public/assets/tiles.png";
 export default class HelloWorldScene extends Phaser.Scene {
   private player?: Phaser.Physics.Arcade.Sprite;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -9,18 +9,16 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("grass", tileImage);
-    this.load.setBaseURL("https://labs.phaser.io");
+    this.load.image("tile", tileImage);
 
-    this.load.spritesheet("dude", "assets/sprites/dude.png", { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet("dude", "https://labs.phaser.io/assets/sprites/dude.png", { frameWidth: 32, frameHeight: 48 });
   }
 
   create() {
-    this.add.image(400, 300, "sky");
+    this.add.tileSprite(500, 500, 800, 500, "tile");
 
     // Create player
     this.player = this.physics.add.sprite(400, 300, "dude");
-    this.player.setCollideWorldBounds(true);
 
     // Player animations
     this.anims.create({
@@ -59,7 +57,6 @@ export default class HelloWorldScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // Remove gravity
-    this.physics.world.gravity.y = 0;
   }
 
   update() {
