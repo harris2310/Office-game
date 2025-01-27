@@ -52,7 +52,20 @@
  "tileheight":32,
  "tilesets":[
         {
+         "columns":16,
          "firstgid":1,
+         "image":"Documents\/Node_Projects\/Office-game\/client\/public\/assets\/tiles.png",
+         "imageheight":352,
+         "imagewidth":512,
+         "margin":0,
+         "name":"default",
+         "spacing":0,
+         "tilecount":176,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "firstgid":177,
          "source":"default.tsx"
         }],
  "tilewidth":32,

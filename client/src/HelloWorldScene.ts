@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import tileImage from "../public/assets/tiles.png";
 export default class HelloWorldScene extends Phaser.Scene {
   private player?: Phaser.Physics.Arcade.Sprite;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -9,17 +8,23 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("tile", tileImage);
+    this.load.tilemapTiledJSON("map", "../public/assets/basic_grass.tmj");
+    this.load.image("tiles", "../public/assets/tiles.png"); // Add this line - adjust path as needed
 
     this.load.spritesheet("dude", "https://labs.phaser.io/assets/sprites/dude.png", { frameWidth: 32, frameHeight: 48 });
   }
 
   create() {
-    this.add.tileSprite(500, 500, 800, 500, "tile");
+    const map = this.make.tilemap({ key: "map" });
 
-    // Create player
-    this.player = this.physics.add.sprite(400, 300, "dude");
-    this.player.setCollideWorldBounds(true);
+    const tileset = map.addTilesetImage("default", "tiles"); // First argument should match your Tiled tileset name
+
+    // Create layer with error checking
+    const layer = map.createLayer(0, tileset, 0, 0);
+    if (!layer) {
+      console.error("Failed to create layer");
+    }
+    this.player = this.physics.add.sprite(100, 100, "dude");
 
     // Player animations
     this.anims.create({
@@ -89,4 +94,3 @@ export default class HelloWorldScene extends Phaser.Scene {
     }
   }
 }
-
